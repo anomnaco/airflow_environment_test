@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  airflow:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      # Airflow home directory
+      AIRFLOW_HOME: /root/airflow
+    volumes:
+      # Uncomment and modify the following lines if you want to persist DAGs and logs
+      - ./dags:/root/airflow/dags
+      - ./logs:/root/airflow/logs
+    restart: unless-stopped

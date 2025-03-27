@@ -1,0 +1,16 @@
+yq
+chromium-browser
+chromium-chromedriver
+poppler-utils
+postgresql
+tesseract-ocr
+weasyprint
+python3.12-venv
+python3
+python3-venv
+python3-pip
+build-essential
+python3.12-dev
+libffi-dev
+libssl-dev
+libpq-dev

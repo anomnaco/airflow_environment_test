@@ -1,0 +1,15 @@
+tenacity==8.5.0
+apache-airflow-providers-slack==9.0.0
+backoff==2.2.1
+Brotli==1.1.0
+fuzzywuzzy==0.18.0
+instructor>=1.5.0
+pdf2image==1.17.0
+pipdeptree==2.26.0
+psycopg2==2.9.10
+PyPDF2==3.0.1
+rpaframework==29.0.0
+sentence-transformers==3.3.0
+weasyprint==64.0
+zopfli==0.2.3.post1
+PyYAML>=6.0.0
