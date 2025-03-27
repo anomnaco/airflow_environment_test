@@ -1,0 +1,76 @@
+---
+- name: Install APT and Python Packages on Target Machines
+  hosts: servers
+  become: yes
+  vars:
+    apt_packages_file: apt-dependencies.txt
+    pip_requirements_file: requirements.txt
+    pip_virtualenv_path: /opt/python-venv
+  tasks:
+
+    - name: Ensure the APT dependencies file is present
+      copy:
+        src: "files/{{ apt_packages_file }}"
+        dest: "/tmp/{{ apt_packages_file }}"
+        mode: '0644'
+
+    - name: Update APT package index
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Install APT packages from file
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop: "{{ lookup('file', 'files/' + apt_packages_file).splitlines() }}"
+      when: lookup('file', 'files/' + apt_packages_file) != ''
+
+    - name: Ensure Python3 and pip are installed
+      apt:
+        name:
+          - python3
+          - python3-pip
+          - python3-venv
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Create Python virtual environment
+      command: python3 -m venv "{{ pip_virtualenv_path }}"
+      args:
+        creates: "{{ pip_virtualenv_path }}/bin/pip"
+
+    - name: Upgrade pip in the virtual environment
+      command: "{{ pip_virtualenv_path }}/bin/pip install --upgrade pip"
+
+    - name: Ensure the requirements.txt file is present
+      copy:
+        src: "files/{{ pip_requirements_file }}"
+        dest: "/tmp/{{ pip_requirements_file }}"
+        mode: '0644'
+
+    - name: Install Python packages from requirements.txt
+      pip:
+        requirements: "/tmp/{{ pip_requirements_file }}"
+        virtualenv: "{{ pip_virtualenv_path }}"
+        virtualenv_command: python3 -m venv
+        executable: "{{ pip_virtualenv_path }}/bin/pip"
+
+    - name: Clean up requirements.txt from remote
+      file:
+        path: "/tmp/{{ pip_requirements_file }}"
+        state: absent
+
+    - name: Clean up apt-dependencies.txt from remote
+      file:
+        path: "/tmp/{{ apt_packages_file }}"
+        state: absent
+
+    - name: Verify Python packages installation
+      command: "{{ pip_virtualenv_path }}/bin/pip list"
+      register: pip_list
+
+    - name: Display installed Python packages
+      debug:
+        msg: "{{ pip_list.stdout_lines }}"

@@ -10,7 +10,7 @@ ENV VENV_PATH=/airflowenv
 ENV PATH=$VENV_PATH/bin:$PATH
 
 # Install APT dependencies
-COPY apt-dependencies.txt /tmp/apt-dependencies.txt
+COPY files/apt-dependencies.txt /tmp/apt-dependencies.txt
 RUN apt-get update && \
     apt-get install -y $(cat /tmp/apt-dependencies.txt) && \
     rm /tmp/apt-dependencies.txt && \
@@ -21,7 +21,7 @@ RUN apt-get update && \
 RUN python3 -m venv $VENV_PATH
 
 # Upgrade pip and install Python requirements
-COPY requirements.txt /tmp/requirements.txt
+COPY files/requirements.txt /tmp/requirements.txt
 RUN pip install --upgrade pip && \
     pip install -r /tmp/requirements.txt && \
     rm /tmp/requirements.txt

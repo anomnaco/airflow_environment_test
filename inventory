@@ -1,0 +1,2 @@
+[servers]
+target_machine ansible_host=YOUR_TARGET_IP ansible_user=YOUR_SSH_USER ansible_ssh_private_key_file=~/.ssh/id_rsa
